@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kairo · 安卓内测版下载</title>
+<meta name="description" content="Kairo 摄影学习 App 内测安装包下载与安装指引，附光影社区入口。">
+<style>
+:root{--ink:#242a29;--paper:#f3f0e8;--red:#e6543c;--green:#273d36;--muted:#6c736e;--line:#dedfd5;--card:#fffdf7;--bg:#d9dcd5}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Helvetica Neue',sans-serif;line-height:1.6;font-size:15px}
+.wrap{max-width:520px;margin:0 auto;min-height:100dvh;background:var(--paper);padding-bottom:40px;box-shadow:0 0 40px #0002}
+.hero{background:linear-gradient(160deg,#273d36 0%,#1f312c 100%);color:#f6f0dd;padding:34px 24px 28px;border-radius:0 0 28px 28px}
+.hero .eyebrow{font-size:10px;letter-spacing:2px;color:#c9d6bf}
+.hero h1{font-size:30px;margin:8px 0 6px;letter-spacing:-.5px}
+.hero p{font-size:13px;color:#d7dfcf;margin:0}
+.badge{display:inline-block;font-size:11px;background:#f1ca70;color:#263b32;border-radius:8px;padding:3px 10px;margin-top:12px;font-weight:700}
+.section{padding:22px 22px 4px}
+.card{background:var(--card);border:1px solid #e4e1d6;border-radius:20px;padding:18px;margin-bottom:14px}
+.dl-main{display:block;text-align:center;background:var(--red);color:#fff8ed;border-radius:18px;padding:17px;font-size:17px;font-weight:800;text-decoration:none;box-shadow:0 10px 22px #e6543c44}
+.dl-main:active{transform:scale(.98)}
+.dl-meta{display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--muted);margin-top:11px;flex-wrap:wrap}
+.dl-meta b{color:var(--ink);font-weight:600}
+.qr-box{text-align:center}
+#qrcode{display:inline-block;padding:12px;background:#fff;border-radius:16px;border:1px solid var(--line)}
+#qrcode img{display:block}
+.qr-tip{font-size:12px;color:var(--muted);margin-top:8px}
+.copy-row{margin-top:10px}
+.copy-row button{background:#e5e7db;border-radius:12px;padding:9px 16px;font-size:12px}
+h2{font-size:18px;margin:6px 0 14px}
+.step{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:0}
+.step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px}
+.step h3{font-size:14.5px;margin:1px 0 4px}
+.step p{font-size:13px;color:#4c534e;margin:0}
+details{margin-top:8px;background:#eef0e8;border-radius:12px;padding:10px 14px;font-size:12.5px;color:#4c534e}
+summary{cursor:pointer;font-weight:600;color:var(--green)}
+details ul{margin:8px 0 0;padding-left:18px}
+details li{margin:4px 0}
+.ver-item{padding:11px 0;border-bottom:1px dashed var(--line)}
+.ver-item:last-child{border-bottom:0}
+.ver-item .v{font-weight:700;font-size:14px}
+.ver-item .d{font-size:11px;color:var(--muted)}
+.ver-item p{font-size:13px;margin:4px 0 0}
+.faq-q{font-weight:700;font-size:14px;margin:12px 0 4px}
+.faq-a{font-size:13px;color:#4c534e;margin:0 0 10px}
+.community{display:block;text-align:center;background:var(--green);color:#fff8eb;border-radius:18px;padding:15px;font-size:15px;font-weight:700;text-decoration:none}
+.notice{font-size:11.5px;color:var(--muted);padding:18px 22px 0}
+.notice p{margin:6px 0}
+.src{font-size:10.5px;color:#8a918a;word-break:break-all}
+a.src{color:#8a918a}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#243d35;color:#fff;font-size:13px;padding:11px 18px;border-radius:13px;display:none;z-index:50}
+@media(min-width:600px){body{padding-top:18px}.wrap{min-height:calc(100dvh - 36px);border-radius:28px;overflow:hidden}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ 部署配置区：上线前只改这里 ============ -->
+  <script>
+  const CFG = {
+    apkUrl: './files/kairo-1.11.0.apk', // 同站相对路径，前端自动拼成线上绝对地址；换包改文件名即可
+    appName: 'Kairo 摄影学习',
+    version: '1.11.0',
+    size: '约 40 MB',
+    updateDate: '2026-10-29',
+    minAndroid: 'Android 8.0 及以上',
+    communityUrl: './community/index.html', // 在线光影社区（网页版）
+    changelog: [
+      { v: '1.11.0', d: '2026-10-29', items: ['摄影图解与器材对比：器材图鉴、摄影史脉络、作品研读、取景练习', '本机讨论手记：记录器材选择与观察问题（本地保存）', '在线光影社区（匿名发帖、回帖、配图）通过独立网页访问，见本页社区入口'] }
+    ]
+  };
+  </script>
+  <!-- ==================================================== -->
+
+  <header class="hero">
+    <div class="eyebrow">KAIRO · BETA DOWNLOAD</div>
+    <h1 id="heroTitle">Kairo 摄影学习</h1>
+    <p>器材图鉴 · 影像知识 · 作品研读 · 取景练习 · 光影社区</p>
+    <span class="badge">安卓内测版 · 免商店安装</span>
+  </header>
+
+  <section class="section">
+    <div class="card">
+      <a class="dl-main" id="dlBtn" download>⬇ 下载安卓安装包（APK）</a>
+      <div class="dl-meta">
+        <span>版本 <b id="mVer"></b></span>
+        <span>大小 <b id="mSize"></b></span>
+        <span>更新 <b id="mDate"></b></span>
+        <span>系统 <b id="mMin"></b></span>
+      </div>
+    </div>
+
+    <div class="card qr-box">
+      <h2 style="text-align:left">扫码下载</h2>
+      <div id="qrcode"></div>
+      <div class="qr-tip">手机相机或微信「扫一扫」识别二维码下载</div>
+      <div class="copy-row">
+        <button onclick="copyLink()">复制下载链接</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h2>安卓安装四步走</h2>
+      <div class="step"><div class="n">1</div><div>
+        <h3>允许「未知来源」安装</h3>
+        <p>Android 8.0 起按「下载来源」单独授权。点安装弹窗里的「设置 / 去开启」，找到你用来下载的浏览器或文件管理器，打开「允许安装来自此来源的应用」。</p>
+        <details><summary>各品牌常见路径</summary><ul>
+          <li>OPPO / realme（ColorOS 12+）：设置 → 密码与安全 → 系统安全 → 外部来源应用，打开对应应用。</li>
+          <li>华为：设置 → 系统和更新 → 纯净模式 → 关闭「增强防护」；安装界面再授权对应应用。</li>
+          <li>小米：纯净模式安装页右上角「设置 → 纯净模式 → 授权单次安装」。</li>
+          <li>vivo / 其他：设置 → 应用与权限 / 安全 → 安装未知应用，给下载来源开权限。</li>
+        </ul></details>
+      </div></div>
+      <div class="step"><div class="n">2</div><div>
+        <h3>找到下载的 APK 并点击</h3>
+        <p>一般在浏览器「下载内容」、通知栏下载完成提示，或文件管理的 Download 目录里。</p>
+      </div></div>
+      <div class="step"><div class="n">3</div><div>
+        <h3>确认继续安装</h3>
+        <p>遇到「风险提示 / 禁止安装 / 纯净模式拦截」时，选择「仍要安装 / 继续安装 / 单次授权」。本应用为内测自签名版本，未上架应用商店，属正常提示。</p>
+      </div></div>
+      <div class="step"><div class="n">4</div><div>
+        <h3>安装完成，打开使用</h3>
+        <p>点「打开」进入 App；首次使用可在「我的 → 我的讨论」进入光影社区发帖交流。</p>
+      </div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h2>版本说明</h2>
+      <div id="changelog"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h2>常见问题</h2>
+      <p class="faq-q">提示「解析包错误 / 安装包损坏」？</p>
+      <p class="faq-a">下载不完整或网络中断，重新下载；确认浏览器未被压缩代理改写文件。</p>
+      <p class="faq-q">提示「出于安全限制，禁止安装」？</p>
+      <p class="faq-a">回到第 1 步，给当前下载来源开启安装未知应用权限；华为需先关闭纯净模式增强防护。</p>
+      <p class="faq-q">提示「与已有应用签名冲突 / 无法覆盖安装」？</p>
+      <p class="faq-a">旧版本若用不同签名安装，需先卸载旧版再装新版（卸载会清除本机收藏与本地草稿）。后续正式版将统一签名保证覆盖升级。</p>
+      <p class="faq-q">安装后打不开或闪退？</p>
+      <p class="faq-a">确认系统为 Android 8.0 及以上；在系统设置里清除该应用缓存后重试，并反馈机型与系统版本。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <a class="community" id="communityBtn">💬 进入光影社区（论坛交流）</a>
+  </section>
+
+  <div class="notice">
+    <p>本页面与安装包为<b>内测邀请版</b>，未在各大应用商店上架，请勿公开大规模传播。</p>
+    <p>社区为匿名论坛，请遵守社区规则与法律法规，不发布违法、隐私、侵权内容；公开运营前需完成备案与内容安全配置。</p>
+    <p>应用内部分摄影作品与厂商图片仅用于学习与界面评审，权利归原权利人所有，公开分发前须确认授权或替换。</p>
+    <p class="src">安装指引参考：OPPO 官方支持 support.oppo.com；华为消费者支持 consumer.huawei.com；小米应用商店纯净模式说明。</p>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+// 相对路径自动补全为当前站点绝对地址：部署到任意域名后，二维码与复制链接都无需手改
+const absUrl = u => /^https?:\/\//.test(u) ? u : new URL(u, location.href).href;
+document.getElementById('heroTitle').textContent = CFG.appName;
+document.getElementById('dlBtn').href = CFG.apkUrl;
+document.getElementById('mVer').textContent = CFG.version;
+document.getElementById('mSize').textContent = CFG.size;
+document.getElementById('mDate').textContent = CFG.updateDate;
+document.getElementById('mMin').textContent = CFG.minAndroid;
+document.getElementById('communityBtn').href = CFG.communityUrl;
+
+document.getElementById('changelog').innerHTML = CFG.changelog.map(c=>`
+  <div class="ver-item">
+    <div class="v">v${c.v}</div><div class="d">${c.d}</div>
+    <p>${c.items.join('<br>')}</p>
+  </div>`).join('');
+
+// 二维码：CDN 可用则渲染；失败则只保留复制链接兜底
+(function(){
+  const box=document.getElementById('qrcode');
+  if(window.QRCode){
+    new QRCode(box,{text:absUrl(CFG.apkUrl),width:180,height:180,correctLevel:QRCode.CorrectLevel.M});
+  }else{
+    box.style.display='none';
+    document.querySelector('.qr-tip').textContent='二维码组件未加载（离线环境），请使用下方「复制下载链接」发给手机。';
+  }
+})();
+
+function copyLink(){
+  const t=document.getElementById('toast');
+  const link=absUrl(CFG.apkUrl);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(()=>{t.textContent='下载链接已复制';t.style.display='block';setTimeout(()=>t.style.display='none',1800);});
+  }else{
+    const ta=document.createElement('textarea');ta.value=link;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');t.textContent='下载链接已复制';}catch(e){t.textContent=link;}
+    t.style.display='block';setTimeout(()=>t.style.display='none',2400);document.body.removeChild(ta);
+  }
+}
+</script>
+</body>
+</html>

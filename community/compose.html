@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>发帖 · Kairo 光影社区</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="back" onclick="location.href='index.html'">← 取消</button>
+    <div class="brand">发布新帖</div>
+    <div style="width:64px"></div>
+  </div>
+
+  <div class="form-page">
+    <label>选择板块</label>
+    <select id="board"></select>
+
+    <label>标题（4–70 字）</label>
+    <input type="text" id="title" maxlength="70" placeholder="一句话说清主题，例如：新手第一台定焦怎么选">
+
+    <label>正文（可写场景、参数、疑问或作品说明）</label>
+    <textarea id="body" placeholder="想讨论什么？把背景、尝试和问题写具体，更容易得到回应。"></textarea>
+
+    <label>配图（可选，8MB 以内）</label>
+    <input type="file" id="imgFile" accept="image/*" hidden>
+    <button class="btn-ghost" style="padding:10px 16px;border-radius:12px" onclick="document.getElementById('imgFile').click()">＋ 选择图片</button>
+    <div class="preview" id="preview" style="display:none">
+      <img id="previewImg" alt="预览">
+      <button class="rm" onclick="clearImage()">×</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn-ghost" onclick="location.href='index.html'">取消</button>
+      <button class="btn-primary" onclick="submitPost()">发布</button>
+    </div>
+
+    <div class="rules-box"><b>发布前请确认</b><ul id="ruleList"></ul></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script>
+let pendingImage=null;
+$('#board').innerHTML=SITE_CONFIG.boards.map(b=>`<option value="${b.key}">${esc(b.name)}</option>`).join('');
+$('#ruleList').innerHTML=SITE_CONFIG.rules.map(r=>`<li>${esc(r)}</li>`).join('');
+
+function dataUrlFromFile(file){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); }); }
+document.getElementById('imgFile').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f)return;
+  if(f.size>8*1024*1024){ toast('图片请控制在 8MB 以内'); e.target.value=''; return; }
+  pendingImage=await dataUrlFromFile(f);
+  $('#previewImg').src=pendingImage; $('#preview').style.display='inline-block';
+});
+function clearImage(){ pendingImage=null; $('#preview').style.display='none'; document.getElementById('imgFile').value=''; }
+
+async function submitPost(){
+  const title=$('#title').value.trim();
+  const body=$('#body').value.trim();
+  const board=$('#board').value;
+  if(title.length<4){ toast('标题至少 4 个字'); return; }
+  if(body.length<5){ toast('正文至少写 5 个字'); return; }
+  let imageUrl=null;
+  if(pendingImage){ try{ imageUrl=await API.uploadImage(pendingImage); }catch(e){ toast('图片上传失败：'+e.message); return; } }
+  try{
+    const row=await API.createTopic({title,body,board,imageUrl});
+    toast('发布成功');
+    setTimeout(()=>location.href='post.html?id='+encodeURIComponent(row.id),500);
+  }catch(e){ toast('发布失败：'+e.message); }
+}
+</script>
+</body>
+</html>

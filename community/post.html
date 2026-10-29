@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>帖子详情 · Kairo 光影社区</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="back" onclick="location.href='index.html'">← 返回列表</button>
+    <div class="brand">帖子详情</div>
+    <div style="width:64px"></div>
+  </div>
+
+  <div id="content"></div>
+  <div class="section-title" id="replyTitle">全部回复</div>
+  <div id="replies"></div>
+  <div style="height:96px"></div>
+</div>
+
+<div class="reply-box">
+  <div class="reply-inner">
+    <input type="file" id="imgFile" accept="image/*" hidden>
+    <button class="img-pick" title="添加图片" onclick="document.getElementById('imgFile').click()">🖼</button>
+    <textarea id="replyText" rows="1" placeholder="友善回复，写下你的看法…"></textarea>
+    <button onclick="sendReply()">发送</button>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script>
+const qs=new URLSearchParams(location.search);
+const topicId=qs.get('id');
+let pendingImage=null;
+let currentTopic=null;
+
+function dataUrlFromFile(file){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); }); }
+
+document.getElementById('imgFile').addEventListener('change', async e=>{
+  const f=e.target.files[0]; if(!f)return;
+  if(f.size>8*1024*1024){ toast('图片请控制在 8MB 以内'); e.target.value=''; return; }
+  pendingImage=await dataUrlFromFile(f); toast('已选择图片，发送时上传');
+});
+
+async function loadTopic(){
+  currentTopic=await API.getTopic(topicId);
+  if(!currentTopic){ $('#content').innerHTML='<div class="empty">帖子不存在或已被删除。</div>'; return; }
+  const mine=currentTopic.author_seed===IDENTITY.seed;
+  $('#content').innerHTML=`
+    <div class="post-head">
+      <div><span class="tag">${esc(boardName(currentTopic.board))}</span></div>
+      <h1>${esc(currentTopic.title)}</h1>
+      <div class="post-by">
+        <span class="avatar">${esc((currentTopic.author_name||'?').slice(0,1))}</span>
+        <span>${esc(currentTopic.author_name)}</span>
+        <span>${fmtTime(currentTopic.created_at)}</span>
+        <span>👁 ${currentTopic.views||0}</span>
+      </div>
+    </div>
+    <div class="post-body">
+      <p class="content">${esc(currentTopic.body)}</p>
+      ${currentTopic.image_path?`<img src="${esc(currentTopic.image_path)}" onerror="this.style.display='none'">`:''}
+    </div>
+    <div class="tool-row">
+      ${mine?`<button class="danger" onclick="delTopic()">删除本帖</button>`:''}
+      <button onclick="location.href='index.html'">返回列表</button>
+    </div>`;
+}
+
+async function loadReplies(){
+  const list=await API.listReplies(topicId);
+  $('#replyTitle').textContent=`全部回复（${list.length}）`;
+  if(!list.length){ $('#replies').innerHTML='<div class="empty">还没有回复，来抢沙发。</div>'; return; }
+  $('#replies').innerHTML=list.map((r,i)=>{
+    const mine=r.author_seed===IDENTITY.seed;
+    return `<div class="reply">
+      <span class="avatar">${esc((r.author_name||'?').slice(0,1))}</span>
+      <div class="rbody">
+        <div class="rhead"><b>${esc(r.author_name)}</b><span>${fmtTime(r.created_at)}</span></div>
+        <p>${esc(r.body)}</p>
+        ${r.image_path?`<img src="${esc(r.image_path)}" onerror="this.style.display='none'">`:''}
+        ${mine?`<button class="del" onclick="delReply('${r.id}')">删除</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function sendReply(){
+  const body=document.getElementById('replyText').value.trim();
+  if(!body && !pendingImage){ toast('先写点内容或选一张图'); return; }
+  let imageUrl=null;
+  if(pendingImage){ try{ imageUrl=await API.uploadImage(pendingImage); }catch(e){ toast('图片上传失败：'+e.message); return; } }
+  try{
+    await API.createReply(topicId,{body,imageUrl});
+    document.getElementById('replyText').value=''; pendingImage=null; document.getElementById('imgFile').value='';
+    await loadReplies(); window.scrollTo(0,document.body.scrollHeight);
+  }catch(e){ toast('发送失败：'+e.message); }
+}
+
+async function delTopic(){
+  if(!confirm('确认删除本帖及其全部回复？'))return;
+  await API.deleteTopic(topicId); toast('已删除'); setTimeout(()=>location.href='index.html',600);
+}
+async function delReply(id){
+  if(!confirm('删除这条回复？'))return;
+  await API.deleteReply(id); loadReplies();
+}
+
+(async()=>{
+  if(!topicId){ $('#content').innerHTML='<div class="empty">缺少帖子参数。</div>'; return; }
+  await API.incViews(topicId);
+  await loadTopic(); await loadReplies();
+  if(API.mode()==='cloud') setInterval(loadReplies, SITE_CONFIG.pollIntervalMs);
+})();
+</script>
+</body>
+</html>
