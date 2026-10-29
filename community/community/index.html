@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>光影社区 · Kairo</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#273d36">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="光影社区">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar" id="topbar"></div>
+  <div class="modebar" id="modebar"></div>
+
+  <div class="boards" id="boards"></div>
+
+  <div class="list" id="list"></div>
+
+  <button class="fab" onclick="location.href='compose.html'">＋ 发帖</button>
+
+  <div class="rules-box" style="margin:18px">
+    <b>社区规则</b>
+    <ul id="ruleList"></ul>
+  </div>
+  <div class="bottom-note">匿名交流 · 内容请遵守社区规则与法律法规</div>
+</div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script>
+let currentBoard='all';
+
+function renderBoards(){
+  const all=[{key:'all',name:'全部'},...SITE_CONFIG.boards];
+  $('#boards').innerHTML=all.map(b=>`<button class="${currentBoard===b.key?'on':''}" onclick="pickBoard('${b.key}')">${esc(b.name)}</button>`).join('');
+}
+function pickBoard(k){ currentBoard=k; renderBoards(); load(); }
+
+async function load(){
+  try{
+    const topics=await API.listTopics(currentBoard);
+    if(!topics.length){ $('#list').innerHTML='<div class="empty">还没有帖子，点右下角「发帖」发出第一条吧。</div>'; return; }
+    $('#list').innerHTML=topics.map(t=>`
+      <div class="topic-card" onclick="location.href='post.html?id=${encodeURIComponent(t.id)}'">
+        <div><span class="tag">${esc(boardName(t.board))}</span></div>
+        <h3>${esc(t.title)}</h3>
+        ${t.body?`<div class="topic-excerpt">${esc(t.body)}</div>`:''}
+        ${t.image_path?`<img class="topic-thumb" src="${esc(t.image_path)}" alt="配图" onerror="this.style.display='none'">`:''}
+        <div class="topic-meta">
+          <span>${esc(t.author_name)} · ${fmtTime(t.created_at)}</span>
+          <span class="stats"><span>💬 ${t.reply_count||0}</span><span>👁 ${t.views||0}</span></span>
+        </div>
+      </div>`).join('');
+  }catch(e){ $('#list').innerHTML=`<div class="empty">加载失败：${esc(e.message)}<br>请检查后端配置或网络后重试。</div>`; }
+}
+
+$('#ruleList').innerHTML=SITE_CONFIG.rules.map(r=>`<li>${esc(r)}</li>`).join('');
+renderTopbar('index');
+renderBoards();
+load();
+// 云端模式定时刷新新帖
+if(API.mode()==='cloud') setInterval(load, SITE_CONFIG.pollIntervalMs);
+</script>
+</body>
+</html>
